@@ -13,3 +13,14 @@
 - **`fCMiscellaneousState/waterUsage`** — added `SensorDeviceClass.WATER` and `UnitOfVolume.LITERS`. Previously the sensor had no unit; it now participates in HA's unit-conversion and energy dashboard.
 - **`userSelections/analogTemperature`** — added `95_CELSIUS` to the catalog fallback values list (alongside the existing `90_CELSIUS`) to cover appliances that top out at 95 °C. Appliances whose API returns their own values list are unaffected.
 - **Maintenance item 1 `maint1_occured`** — changed from generic `device_class=None` to `BinarySensorDeviceClass.PROBLEM`, consistent with the newly added items 2–10.
+
+### Translations
+- **Spanish (es.json)** — fixed exception message placeholders to match English template variable names:
+  - `appliance_offline`: `{estado}` → `{state}`
+  - `not_supported_by_program`: `{programa}` → `{program}`
+  - `food_probe_not_supported_by_program`: `{programa}` → `{program}`
+  - `food_probe_locked_by_program`: `{valor}`, `{programa}` → `{value}`, `{program}`
+  - `invalid_preset_mode`: `{modo}`, `{modos}` → `{mode}`, `{modes}`
+- **All other language files** — fixed placeholder mismatches to align with English template:
+  - Czech, Danish, Dutch, Finnish, German, Hungarian, Luxembourg, Norwegian, Polish, Romanian, Russian, Slovak, Swedish — corrected placeholder names in exception messages to use English identifiers (`{state}`, `{program}`, `{value}`, `{mode}`, `{modes}`) instead of translated names
+  - Italian — fixed `invalid_preset_mode` to use `{modes}` instead of duplicate `{mode}`

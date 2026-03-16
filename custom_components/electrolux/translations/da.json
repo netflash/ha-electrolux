@@ -105,7 +105,7 @@
             "message": "Kodetemperaturen understøttes ikke af programmet {program}."
         },
         "food_probe_locked_by_program": {
-            "message": "Koketemperaturen er låst til {værdi}°C for program {program}."
+            "message": "Koketemperaturen er låst til {value}°C for program {program}."
         },
         "value_below_minimum": {
             "message": "Værdien {value} er under minimumsværdien {min_val} for {attr}."

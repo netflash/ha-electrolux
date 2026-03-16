@@ -105,7 +105,7 @@
             "message": "Matsondens temperatur stöds inte av programmet {program}."
         },
         "food_probe_locked_by_program": {
-            "message": "Matsondens temperatur är låst till {värde}°C för program {program}."
+            "message": "Matsondens temperatur är låst till {value}°C för program {program}."
         },
         "value_below_minimum": {
             "message": "Värdet {value} är under det lägsta {min_val} för {attr}."
@@ -117,7 +117,7 @@
             "message": "Ogiltigt alternativ valt."
         },
         "invalid_preset_mode": {
-            "message": "Ogiltigt förinställt läge {läge}. Tillgängliga lägen: {lägen}."
+            "message": "Ogiltigt förinställt läge {mode}. Tillgängliga lägen: {modes}."
         },
         "appliance_state_incomplete": {
             "message": "Kan inte ändra inställning: apparatens tillstånd är ofullständigt. Vänta tills apparaten initieras."

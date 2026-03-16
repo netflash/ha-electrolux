@@ -105,7 +105,7 @@
             "message": "Teplota potravinovej sondy nie je podporovaná programom {program}."
         },
         "food_probe_locked_by_program": {
-            "message": "Teplota potravinovej sondy je uzamknutá na {hodnota}°C pre program {program}."
+            "message": "Teplota potravinovej sondy je uzamknutá na {value}°C pre program {program}."
         },
         "value_below_minimum": {
             "message": "Hodnota {value} je nižšia ako minimum {min_val} pre {attr}."

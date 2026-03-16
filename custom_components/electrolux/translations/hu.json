@@ -105,7 +105,7 @@
             "message": "Az ételszonda hőmérsékletét a {program} program nem támogatja."
         },
         "food_probe_locked_by_program": {
-            "message": "Az élelmiszerszonda hőmérséklete {érték}°C-on zárolva van a {program} programban."
+            "message": "Az élelmiszerszonda hőmérséklete {value}°C-on zárolva van a {program} programban."
         },
         "value_below_minimum": {
             "message": "Az {value} érték a {attr} minimális {min_val} értéke alatt van."

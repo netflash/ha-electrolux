@@ -90,22 +90,22 @@
     },
     "exceptions": {
         "appliance_offline": {
-            "message": "Den Apparat ass offline (aktuelle Staat: {Staat}). Kontrolléiert w.e.g. datt den Apparat ugeschloss ass, Netzwierkverbindung huet a mat Cloud Servicer ugeschloss ass."
+            "message": "Den Apparat ass offline (aktuelle Staat: {state}). Kontrolléiert w.e.g. datt den Apparat ugeschloss ass, Netzwierkverbindung huet a mat Cloud Servicer ugeschloss ass."
         },
         "not_supported_by_program": {
-            "message": "Kann {attr} net änneren: net vum aktuelle Programm {Programm} ënnerstëtzt."
+            "message": "Kann {attr} net änneren: net vum aktuelle Programm {program} ënnerstëtzt."
         },
         "control_locked": {
-            "message": "{attr} ass um {value} fir de Programm {Programm} gespaart."
+            "message": "{attr} ass um {value} fir de Programm {program} gespaart."
         },
         "food_probe_not_inserted": {
             "message": "D'Liewensmëttelsonde muss agefouert ginn fir d'Zieltemperatur ze setzen."
         },
         "food_probe_not_supported_by_program": {
-            "message": "Liewensmëttelsondetemperatur gëtt net vum Programm {Programm} ënnerstëtzt."
+            "message": "Liewensmëttelsondetemperatur gëtt net vum Programm {program} ënnerstëtzt."
         },
         "food_probe_locked_by_program": {
-            "message": "D'Liewensmëttelsondetemperatur ass bei {Wäert}°C fir Programm {Programm} gespaart."
+            "message": "D'Liewensmëttelsondetemperatur ass bei {value}°C fir Programm {program} gespaart."
         },
         "value_below_minimum": {
             "message": "De Wäert {value} ass ënner dem Minimum {min_val} fir {attr}."
@@ -117,7 +117,7 @@
             "message": "Invalid Optioun ausgewielt."
         },
         "invalid_preset_mode": {
-            "message": "Invalid Preset Modus {Modus}. Verfügbare Modi: {modes}."
+            "message": "Invalid Preset Modus {mode}. Verfügbare Modi: {modes}."
         },
         "appliance_state_incomplete": {
             "message": "Kann d'Astellung net änneren: den Apparatzoustand ass onkomplett. Waart w.e.g. bis den Apparat initialiséiert."

@@ -90,10 +90,10 @@
     },
     "exceptions": {
         "appliance_offline": {
-            "message": "El dispositivo está fuera de línea (estado actual: {estado}). Verifique que el dispositivo esté enchufado, tenga conectividad de red y esté conectado a los servicios en la nube."
+            "message": "El dispositivo está fuera de línea (estado actual: {state}). Verifique que el dispositivo esté enchufado, tenga conectividad de red y esté conectado a los servicios en la nube."
         },
         "not_supported_by_program": {
-            "message": "No se puede cambiar {attr}: no es compatible con el programa actual {programa}."
+            "message": "No se puede cambiar {attr}: no es compatible con el programa actual {program}."
         },
         "control_locked": {
             "message": "{attr} está bloqueado en {value} para el programa {program}."
@@ -102,10 +102,10 @@
             "message": "Se debe insertar una sonda para alimentos para establecer la temperatura objetivo."
         },
         "food_probe_not_supported_by_program": {
-            "message": "La temperatura de la sonda de alimentos no es compatible con el programa {programa}."
+            "message": "La temperatura de la sonda de alimentos no es compatible con el programa {program}."
         },
         "food_probe_locked_by_program": {
-            "message": "La temperatura de la sonda alimentaria está bloqueada en {valor}°C para el programa {programa}."
+            "message": "La temperatura de la sonda alimentaria está bloqueada en {value}°C para el programa {program}."
         },
         "value_below_minimum": {
             "message": "El valor {value} está por debajo del mínimo {min_val} para {attr}."
@@ -117,7 +117,7 @@
             "message": "Opción no válida seleccionada."
         },
         "invalid_preset_mode": {
-            "message": "Modo preestablecido no válido {modo}. Modos disponibles: {modos}."
+            "message": "Modo preestablecido no válido {mode}. Modos disponibles: {modes}."
         },
         "appliance_state_incomplete": {
             "message": "No se puede cambiar la configuración: el estado del aparato está incompleto. Espere a que el aparato se inicialice."

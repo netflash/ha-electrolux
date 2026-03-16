@@ -105,7 +105,7 @@
             "message": "Ohjelma {program} ei tue ruoka-anturin lämpötilaa."
         },
         "food_probe_locked_by_program": {
-            "message": "Ruokaanturin lämpötila on lukittu arvoon {arvo}°C ohjelmalle {program}."
+            "message": "Ruokaanturin lämpötila on lukittu arvoon {value}°C ohjelmalle {program}."
         },
         "value_below_minimum": {
             "message": "Arvo {value} on alle vähimmäisarvon {min_val} arvolle {attr}."

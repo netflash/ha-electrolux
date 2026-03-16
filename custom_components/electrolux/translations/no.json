@@ -117,7 +117,7 @@
             "message": "Ugyldig alternativ er valgt."
         },
         "invalid_preset_mode": {
-            "message": "Ugyldig forhåndsinnstilt modus {modus}. Tilgjengelige moduser: {modes}."
+            "message": "Ugyldig forhåndsinnstilt modus {mode}. Tilgjengelige moduser: {modes}."
         },
         "appliance_state_incomplete": {
             "message": "Kan ikke endre innstilling: apparatets tilstand er ufullstendig. Vent til apparatet initialiseres."

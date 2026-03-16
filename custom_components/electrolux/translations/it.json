@@ -102,7 +102,7 @@
             "message": "La sonda alimentare deve essere inserita per impostare la temperatura target."
         },
         "food_probe_not_supported_by_program": {
-            "message": "La temperatura della sonda alimentare non è supportata dal programma {programma}."
+            "message": "La temperatura della sonda alimentare non è supportata dal programma {program}."
         },
         "food_probe_locked_by_program": {
             "message": "La temperatura della sonda alimentare è bloccata su {value}°C per il programma {program}."
@@ -117,7 +117,7 @@
             "message": "Opzione selezionata non valida."
         },
         "invalid_preset_mode": {
-            "message": "Modalità preimpostata {mode} non valida. Modalità disponibili: {modalità}."
+            "message": "Modalità preimpostata {mode} non valida. Modalità disponibili: {modes}."
         },
         "appliance_state_incomplete": {
             "message": "Impossibile modificare l'impostazione: lo stato dell'appliance è incompleto. Attendere l'inizializzazione dell'appliance."

@@ -105,7 +105,7 @@
             "message": "Die Temperatur des Lebensmittelsensors wird vom Programm {program} nicht unterstützt."
         },
         "food_probe_locked_by_program": {
-            "message": "Die Temperatur des Lebensmittelfühlers ist für das Programm {Programm} auf {Wert}°C gesperrt."
+            "message": "Die Temperatur des Lebensmittelfühlers ist für das Programm {program} auf {value}°C gesperrt."
         },
         "value_below_minimum": {
             "message": "Der Wert {value} liegt unter dem Mindestwert {min_val} für {attr}."

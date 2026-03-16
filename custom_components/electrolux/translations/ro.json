@@ -117,7 +117,7 @@
             "message": "Opțiune nevalidă selectată."
         },
         "invalid_preset_mode": {
-            "message": "Mod presetat nevalid {mode}. Moduri disponibile: {moduri}."
+            "message": "Mod presetat nevalid {mode}. Moduri disponibile: {modes}."
         },
         "appliance_state_incomplete": {
             "message": "Nu se poate modifica setarea: starea aparatului este incompletă. Vă rugăm să așteptați inițializarea aparatului."

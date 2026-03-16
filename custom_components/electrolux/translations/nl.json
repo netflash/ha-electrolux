@@ -102,10 +102,10 @@
             "message": "De voedselsonde moet worden geplaatst om de doeltemperatuur in te stellen."
         },
         "food_probe_not_supported_by_program": {
-            "message": "De temperatuur van de voedselsonde wordt niet ondersteund door programma {programma}."
+            "message": "De temperatuur van de voedselsonde wordt niet ondersteund door programma {program}."
         },
         "food_probe_locked_by_program": {
-            "message": "De temperatuur van de voedselsonde is vergrendeld op {waarde}°C voor programma {programma}."
+            "message": "De temperatuur van de voedselsonde is vergrendeld op {value}°C voor programma {program}."
         },
         "value_below_minimum": {
             "message": "Waarde {value} ligt onder het minimum {min_val} voor {attr}."
@@ -117,7 +117,7 @@
             "message": "Ongeldige optie geselecteerd."
         },
         "invalid_preset_mode": {
-            "message": "Ongeldige voorinstellingsmodus {mode}. Beschikbare modi: {modi}."
+            "message": "Ongeldige voorinstellingsmodus {mode}. Beschikbare modi: {modes}."
         },
         "appliance_state_incomplete": {
             "message": "Kan instelling niet wijzigen: de status van het apparaat is onvolledig. Wacht tot het apparaat is geïnitialiseerd."
