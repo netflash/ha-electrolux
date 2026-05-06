@@ -3,8 +3,8 @@
 import logging
 from typing import Any
 
+from homeassistant.components.vacuum import StateVacuumEntity
 from homeassistant.components.vacuum.const import (
-    StateVacuumEntity,
     VacuumActivity,
     VacuumEntityFeature,
 )
@@ -17,6 +17,7 @@ from .entity import ElectroluxEntity
 from .util import execute_command_with_error_handling
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
+
 
 # ── Appliance type sets ───────────────────────────────────────────────────────
 
