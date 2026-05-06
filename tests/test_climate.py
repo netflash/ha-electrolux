@@ -250,7 +250,7 @@ class TestElectroluxClimate:
 
     def test_hvac_mode_off(self, climate_entity, mock_appliance):
         """Test HVAC mode returns OFF when appliance is off."""
-        mock_appliance.reported_state["applianceState"] = "OFF"
+        mock_appliance.reported_state["mode"] = "OFF"
         assert climate_entity.hvac_mode == HVACMode.OFF
 
     def test_hvac_mode_auto(self, climate_entity, mock_appliance):
