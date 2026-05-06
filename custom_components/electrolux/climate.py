@@ -223,21 +223,29 @@ class ElectroluxClimate(ElectroluxEntity, ClimateEntity):
 
     @property
     def hvac_mode(self) -> HVACMode:
-        state_value = self.get_state_attr("applianceState")
-        if state_value is not None and str(state_value).upper() == "OFF":
+        """
+        Electrolux ACs do NOT use applianceState to indicate ON/OFF.
+        They always report applianceState="OFF" unless the compressor is running.
+        Power state must be derived from `mode`, not `applianceState`.
+        """
+        mode_value = self.get_state_attr("mode")
+        if not mode_value:
             return HVACMode.OFF
 
-        mode_value = self.get_state_attr("mode")
-        if mode_value:
-            mode_mapping = {
-                "AUTO": HVACMode.AUTO,
-                "COOL": HVACMode.COOL,
-                "HEAT": HVACMode.HEAT,
-                "DRY": HVACMode.DRY,
-                "FANONLY": HVACMode.FAN_ONLY,
-            }
-            return mode_mapping.get(str(mode_value).upper(), HVACMode.AUTO)
-        return HVACMode.AUTO
+        mode_str = str(mode_value).upper()
+
+        if mode_str == "OFF":
+            return HVACMode.OFF
+
+        mode_mapping = {
+            "AUTO": HVACMode.AUTO,
+            "COOL": HVACMode.COOL,
+            "HEAT": HVACMode.HEAT,
+            "DRY": HVACMode.DRY,
+            "FANONLY": HVACMode.FAN_ONLY,
+        }
+
+        return mode_mapping.get(mode_str, HVACMode.AUTO)
 
     @property
     def hvac_modes(self) -> list[HVACMode]:
@@ -360,15 +368,16 @@ class ElectroluxClimate(ElectroluxEntity, ClimateEntity):
 
     async def async_set_hvac_mode(self, hvac_mode: HVACMode) -> None:
         """Set new target hvac mode."""
+
+        # OFF → send OFF command
         if hvac_mode == HVACMode.OFF:
-            # Turn off the device using executeCommand
             await self._send_command("executeCommand", "OFF")
+            self._apply_optimistic_update("mode", "OFF")
             return
 
-        # Turn on if off using executeCommand
+        # Turn on first
         await self._send_command("executeCommand", "ON")
 
-        # Set the mode
         mode_mapping = {
             HVACMode.AUTO: "AUTO",
             HVACMode.COOL: "COOL",
@@ -378,7 +387,9 @@ class ElectroluxClimate(ElectroluxEntity, ClimateEntity):
         }
 
         if hvac_mode in mode_mapping:
-            await self._send_command("mode", mode_mapping[hvac_mode])
+            mode_str = mode_mapping[hvac_mode]
+            await self._send_command("mode", mode_str)
+            self._apply_optimistic_update("mode", mode_str)
 
     async def async_set_fan_mode(self, fan_mode: str) -> None:
         """Set new target fan mode."""
