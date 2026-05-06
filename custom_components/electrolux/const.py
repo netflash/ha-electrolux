@@ -18,7 +18,19 @@ SELECT = Platform.SELECT
 SENSOR = Platform.SENSOR
 SWITCH = Platform.SWITCH
 TEXT = Platform.TEXT
-PLATFORMS = [BINARY_SENSOR, BUTTON, CLIMATE, FAN, NUMBER, SELECT, SENSOR, SWITCH, TEXT]
+VACUUM = Platform.VACUUM
+PLATFORMS = [
+    BINARY_SENSOR,
+    BUTTON,
+    CLIMATE,
+    FAN,
+    NUMBER,
+    SELECT,
+    SENSOR,
+    SWITCH,
+    TEXT,
+    VACUUM,
+]
 
 # Configuration and options
 CONF_NOTIFICATION_DEFAULT = "notifications"
@@ -212,5 +224,19 @@ AlertType = Literal[
 CapabilityType = Literal["string", "number", "boolean", "alert", "temperature"]
 AccessType = Literal["read", "readwrite", "write", "constant"]
 ApplianceType = Literal[
-    "OV", "CR", "WM", "WD", "AC", "DW", "Cybele", "Gordias", "PUREi9", "700series"
+    "OV",
+    "CR",
+    "WM",
+    "WD",
+    "AC",
+    "CA",
+    "DW",
+    "Azul",
+    "Panther",
+    "Bogong",
+    "Telica",
+    "Cybele",
+    "Gordias",
+    "PUREi9",
+    "700series",
 ]
