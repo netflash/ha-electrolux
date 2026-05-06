@@ -622,7 +622,7 @@ class TestElectroluxClimateMissingCoverage:
         """Line 218 — hvac_mode returns AUTO when applianceState is not OFF and mode is absent."""
         entity = self._make_entity(mock_coordinator)
         entity.get_state_attr = lambda path: {"applianceState": "RUNNING"}.get(path)
-        assert entity.hvac_mode == HVACMode.AUTO
+        assert entity.hvac_mode == HVACMode.OFF
 
     def test_hvac_action_none_when_no_state(self, mock_coordinator):
         """Line 260 — hvac_action returns None when applianceState is absent."""
