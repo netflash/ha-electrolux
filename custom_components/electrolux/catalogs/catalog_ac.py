@@ -10,6 +10,10 @@ from ..model import ElectroluxDevice
 
 CATALOG_AC: dict[str, ElectroluxDevice] = {
     # Air conditioner specific controls
+    # Note: executeCommand values vary by model
+    # - Bogong/Telica/Panther: ON, OFF
+    # - Other AC models may support START, STOPRESET
+    # The API returns actual supported values at runtime
     "executeCommand": ElectroluxDevice(
         capability_info={
             "access": "write",
@@ -17,8 +21,6 @@ CATALOG_AC: dict[str, ElectroluxDevice] = {
             "values": {
                 "ON": {},
                 "OFF": {},
-                "START": {},
-                "STOPRESET": {},
             },
         },
         device_class=None,
@@ -30,7 +32,7 @@ CATALOG_AC: dict[str, ElectroluxDevice] = {
     "targetTemperatureC": ElectroluxDevice(
         capability_info={
             "access": "readwrite",
-            "type": "number",
+            "type": "temperature",
             "min": 16,
             "max": 30,
             "step": 1,
@@ -44,7 +46,7 @@ CATALOG_AC: dict[str, ElectroluxDevice] = {
     "targetTemperatureF": ElectroluxDevice(
         capability_info={
             "access": "readwrite",
-            "type": "number",
+            "type": "temperature",
             "min": 60,
             "max": 86,
             "step": 1,
