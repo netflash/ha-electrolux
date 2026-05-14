@@ -1,5 +1,3 @@
-# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-
 name: Release Drafter
 
 on:
@@ -24,7 +22,8 @@ jobs:
       - name: Get version from manifest.json
         id: get_version
         run: |
-          VERSION=$(grep '"version"' custom_components/electrolux/manifest.json | sed 's/.*"version": "\([^"]*\)".*/\1/')
+          # Robust extraction of the version value
+          VERSION=$(jq -r '.version' custom_components/electrolux/manifest.json)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Version found: $VERSION"
 
@@ -33,57 +32,51 @@ jobs:
         run: |
           RELEASE_FILE="release_notes/RELEASE_NOTES_v${{ steps.get_version.outputs.version }}.md"
           if [ -f "$RELEASE_FILE" ]; then
-            echo "title=Version ${{ steps.get_version.outputs.version }}" >> $GITHUB_OUTPUT
             echo "found=true" >> $GITHUB_OUTPUT
-            echo "Release notes found for version ${{ steps.get_version.outputs.version }}"
-          else
-            echo "No release notes file found: $RELEASE_FILE"
             echo "title=Version ${{ steps.get_version.outputs.version }}" >> $GITHUB_OUTPUT
+          else
             echo "found=false" >> $GITHUB_OUTPUT
+            echo "No release notes file found: $RELEASE_FILE"
           fi
 
       - name: Create electrolux.zip asset
         if: github.event_name == 'push'
         run: |
           mkdir -p dist
+          # -j (junk paths) is often preferred for HA components so the zip 
+          # starts at the internal folder structure, but -r is fine for full custom_components
           zip -r dist/electrolux.zip custom_components
 
-      - name: Create or Update Release with Release Notes
+      - name: Create or Update Release
         if: steps.release_notes.outputs.found == 'true' && github.event_name == 'push'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ steps.get_version.outputs.version }}
           TITLE: ${{ steps.release_notes.outputs.title }}
+          NOTES_PATH: "release_notes/RELEASE_NOTES_v${{ steps.get_version.outputs.version }}.md"
         run: |
-          # Check if a published release already exists for this version — never touch it
-          EXISTING_PUBLISHED=$(gh release list --json tagName,isDraft --jq ".[] | select(.tagName == \"v${VERSION}\" and .isDraft == false) | .tagName")
-          if [ -n "$EXISTING_PUBLISHED" ]; then
-            echo "Published release v${VERSION} already exists. Skipping."
+          TAG="v${VERSION}"
+          
+          # Check for published release
+          if gh release view "$TAG" --json isDraft | grep -q '"isDraft":false'; then
+            echo "Published release $TAG already exists. Skipping."
             exit 0
           fi
 
-          # Check if a draft release already exists for this version
-          EXISTING_DRAFT=$(gh release list --json tagName,isDraft --jq ".[] | select(.tagName == \"v${VERSION}\" and .isDraft == true) | .tagName")
-
-          if [ -n "$EXISTING_DRAFT" ]; then
-            echo "Updating existing draft release v${VERSION}"
-            gh release edit "v${VERSION}" \
-              --draft \
+          # Check if draft exists
+          if gh release view "$TAG" --json isDraft | grep -q '"isDraft":true'; then
+            echo "Updating existing draft release $TAG"
+            gh release edit "$TAG" \
               --title "$TITLE" \
-              --notes-file "release_notes/RELEASE_NOTES_v${VERSION}.md"
-            # Replace asset: delete old one if present, then upload fresh
-            gh release delete-asset "v${VERSION}" electrolux.zip --yes 2>/dev/null || true
-            gh release upload "v${VERSION}" dist/electrolux.zip
+              --notes-file "$NOTES_PATH"
+            
+            # Re-upload asset (delete if exists to avoid conflicts)
+            gh release upload "$TAG" dist/electrolux.zip --clobber
           else
-            echo "Creating new draft release v${VERSION}"
-            gh release create "v${VERSION}" \
+            echo "Creating new draft release $TAG"
+            gh release create "$TAG" \
+              dist/electrolux.zip \
               --draft \
               --title "$TITLE" \
-              --notes-file "release_notes/RELEASE_NOTES_v${VERSION}.md" \
-              dist/electrolux.zip
+              --notes-file "$NOTES_PATH"
           fi
-
-      - name: Skip Release Creation
-        if: steps.release_notes.outputs.found == 'false' && github.event_name == 'push'
-        run: |
-          echo "No release notes file found for version ${{ steps.get_version.outputs.version }}. Skipping release creation."
