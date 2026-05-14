@@ -128,6 +128,9 @@
         "appliance_disconnected": {
             "message": "El aparato está desconectado o no está disponible. Verifique la conexión de red del aparato."
         },
+        "service_temporarily_unavailable": {
+            "message": "Electrolux service is temporarily unavailable, please try again."
+        },
         "command_rate_limited": {
             "message": "Se enviaron demasiados comandos. Espere un momento e inténtelo de nuevo."
         },

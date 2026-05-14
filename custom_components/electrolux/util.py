@@ -544,12 +544,33 @@ def map_command_error_to_home_assistant_error(
 
     # Method 2: Check HTTP status codes (already extracted above)
     if status_code:
+        SERVICE_UNAVAILABLE_MESSAGE = (
+            "Electrolux service is temporarily unavailable, please try again."
+        )
+        SERVICE_UNAVAILABLE_CODES = {500, 502, 504}
         STATUS_CODE_MAPPING = {
             403: "Remote control is disabled for this appliance. Please enable it on the appliance's control panel.",
             406: "Command not accepted by appliance. Check that the appliance supports this operation.",
             429: "Too many commands sent. Please wait a moment and try again.",
+            500: SERVICE_UNAVAILABLE_MESSAGE,
+            502: SERVICE_UNAVAILABLE_MESSAGE,
             503: "Appliance is disconnected or not available. Check the appliance's network connection.",
+            504: SERVICE_UNAVAILABLE_MESSAGE,
         }
+
+        if status_code in SERVICE_UNAVAILABLE_CODES:
+            logger.warning(
+                "Command failed for %s: HTTP %d (Electrolux service temporarily unavailable)%s | %s",
+                entity_attr,
+                status_code,
+                error_data_str,
+                ex,
+            )
+            return HomeAssistantError(
+                SERVICE_UNAVAILABLE_MESSAGE,
+                translation_domain=DOMAIN,
+                translation_key="service_temporarily_unavailable",
+            )
 
         if status_code in STATUS_CODE_MAPPING:
             user_message = STATUS_CODE_MAPPING[status_code]

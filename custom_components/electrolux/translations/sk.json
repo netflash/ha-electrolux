@@ -128,6 +128,9 @@
         "appliance_disconnected": {
             "message": "Spotrebič je odpojený alebo nedostupný. Skontrolujte sieťové pripojenie spotrebiča."
         },
+        "service_temporarily_unavailable": {
+            "message": "Electrolux service is temporarily unavailable, please try again."
+        },
         "command_rate_limited": {
             "message": "Bolo odoslaných príliš veľa príkazov. Chvíľu počkajte a skúste to znova."
         },

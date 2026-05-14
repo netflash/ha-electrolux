@@ -128,6 +128,9 @@
         "appliance_disconnected": {
             "message": "Cihazın bağlantısı kesilmiş veya kullanılamıyor. Cihazın ağ bağlantısını kontrol edin."
         },
+        "service_temporarily_unavailable": {
+            "message": "Electrolux service is temporarily unavailable, please try again."
+        },
         "command_rate_limited": {
             "message": "Çok fazla komut gönderildi. Lütfen biraz bekleyip tekrar deneyin."
         },

@@ -128,6 +128,9 @@
         "appliance_disconnected": {
             "message": "Aparatul este deconectat sau nu este disponibil. Verificați conexiunea la rețea a aparatului."
         },
+        "service_temporarily_unavailable": {
+            "message": "Electrolux service is temporarily unavailable, please try again."
+        },
         "command_rate_limited": {
             "message": "Prea multe comenzi trimise. Vă rugăm să așteptați un moment și să încercați din nou."
         },

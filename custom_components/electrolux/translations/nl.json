@@ -128,6 +128,9 @@
         "appliance_disconnected": {
             "message": "Apparaat is losgekoppeld of niet beschikbaar. Controleer de netwerkverbinding van het apparaat."
         },
+        "service_temporarily_unavailable": {
+            "message": "Electrolux service is temporarily unavailable, please try again."
+        },
         "command_rate_limited": {
             "message": "Te veel opdrachten verzonden. Wacht even en probeer het opnieuw."
         },
