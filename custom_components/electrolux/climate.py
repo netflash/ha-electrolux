@@ -1,5 +1,6 @@
 """Climate platform for Electrolux."""
 
+import contextlib
 import logging
 from typing import Any
 
@@ -13,6 +14,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.restore_state import RestoreEntity
 
 from .const import CLIMATE
 from .entity import ElectroluxEntity
@@ -83,7 +85,7 @@ async def async_setup_entry(
     return
 
 
-class ElectroluxClimate(ElectroluxEntity, ClimateEntity):
+class ElectroluxClimate(ElectroluxEntity, ClimateEntity, RestoreEntity):
     """Electrolux climate class."""
 
     def __init__(
@@ -135,6 +137,22 @@ class ElectroluxClimate(ElectroluxEntity, ClimateEntity):
             # No explicit temperature capability found — default to Celsius
             self._attr_temperature_unit = UnitOfTemperature.CELSIUS
             self._temp_suffix = "C"
+
+    async def async_added_to_hass(self) -> None:
+        """Restore last user temperature from prior HA state."""
+        await super().async_added_to_hass()
+        if (last_state := await self.async_get_last_state()) is not None:
+            if (temp := last_state.attributes.get("last_user_temperature")) is not None:
+                with contextlib.suppress(ValueError, TypeError):
+                    self._last_user_temperature = float(temp)
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Persist last user temperature so RestoreEntity can recover it."""
+        attrs: dict[str, Any] = {}
+        if self._last_user_temperature is not None:
+            attrs["last_user_temperature"] = self._last_user_temperature
+        return attrs
 
     @property
     def entity_domain(self):
