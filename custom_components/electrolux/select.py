@@ -86,11 +86,12 @@ class ElectroluxSelect(ElectroluxEntity, SelectEntity):
             catalog_entry=catalog_entry,
         )
         raw_values: dict[str, Any] | None = self.capability.get("values", None)
-        # Strip numeric sentinel keys (e.g. "0") that the Electrolux API emits as
-        # no-op defaults — they must not appear as selectable options in the UI.
+        # Only filter numeric sentinel keys (e.g. "0") for non-numeric capabilities.
+        # Numeric capabilities (e.g. temperature selects) use numeric strings as real
+        # option keys — filtering them would silently drop all valid options.
         values_dict: dict[str, Any] | None = (
             _filter_numeric_sentinel_values(raw_values)
-            if isinstance(raw_values, dict)
+            if isinstance(raw_values, dict) and self.capability.get("type") != "number"
             else raw_values
         )
         self.options_list: dict[str, str] = {}
@@ -168,11 +169,18 @@ class ElectroluxSelect(ElectroluxEntity, SelectEntity):
                 ex,
             )
         # When value not in the catalog → add the value to the list dynamically.
-        # Guard: skip numeric sentinel values (e.g. "0") that the appliance may
-        # report as a transient/default state — they should never become options.
+        # For non-numeric capability types, guard against numeric sentinel values
+        # (e.g. "0") that the appliance may report as a transient/default state.
+        # For numeric capability types, all numeric values are valid options.
         if label is None:
             str_value = str(value) if value is not None else ""
-            if str_value and not str_value.lstrip("-").isdigit():
+            is_numeric_capability = self.capability.get("type") == "number"
+            is_numeric_sentinel = (
+                str_value != ""
+                and str_value.lstrip("-").isdigit()
+                and not is_numeric_capability
+            )
+            if str_value and not is_numeric_sentinel:
                 label = self.format_label(value)
                 if label is not None and value is not None:
                     self.options_list[label] = str_value
