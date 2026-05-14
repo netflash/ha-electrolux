@@ -129,7 +129,7 @@
             "message": "Urządzenie jest odłączone lub niedostępne. Sprawdź połączenie sieciowe urządzenia."
         },
         "service_temporarily_unavailable": {
-            "message": "Electrolux service is temporarily unavailable, please try again."
+            "message": "Usługi serwisowe firmy Electrolux są chwilowo niedostępne. Proszę spróbować ponownie."
         },
         "command_rate_limited": {
             "message": "Wysłano zbyt wiele poleceń. Poczekaj chwilę i spróbuj ponownie."

@@ -129,7 +129,7 @@
             "message": "Spotrebič je odpojený alebo nedostupný. Skontrolujte sieťové pripojenie spotrebiča."
         },
         "service_temporarily_unavailable": {
-            "message": "Electrolux service is temporarily unavailable, please try again."
+            "message": "Služba Electrolux je dočasne nedostupná, skúste to prosím neskôr."
         },
         "command_rate_limited": {
             "message": "Bolo odoslaných príliš veľa príkazov. Chvíľu počkajte a skúste to znova."

@@ -129,7 +129,7 @@
             "message": "Aparatul este deconectat sau nu este disponibil. Verificați conexiunea la rețea a aparatului."
         },
         "service_temporarily_unavailable": {
-            "message": "Electrolux service is temporarily unavailable, please try again."
+            "message": "Serviciul Electrolux nu este disponibil momentan, vă rugăm să încercați din nou."
         },
         "command_rate_limited": {
             "message": "Prea multe comenzi trimise. Vă rugăm să așteptați un moment și să încercați din nou."

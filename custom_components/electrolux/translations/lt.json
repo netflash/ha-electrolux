@@ -129,7 +129,7 @@
             "message": "Prietaisas atjungtas arba nepasiekiamas. Patikrinkite prietaiso tinklo ryšį."
         },
         "service_temporarily_unavailable": {
-            "message": "Electrolux service is temporarily unavailable, please try again."
+            "message": "Electrolux paslauga laikinai neveikia, prašome bandyti dar kartą."
         },
         "command_rate_limited": {
             "message": "Išsiųsta per daug komandų. Šiek tiek palaukite ir bandykite dar kartą."

@@ -129,7 +129,7 @@
             "message": "Den Apparat ass ofgeschalt oder net verfügbar. Kontrolléiert d'Netzverbindung vum Apparat."
         },
         "service_temporarily_unavailable": {
-            "message": "Electrolux service is temporarily unavailable, please try again."
+            "message": "Den Electrolux-Service ass temporär net verfügbar, probéiert et w.e.g. nach eng Kéier."
         },
         "command_rate_limited": {
             "message": "Ze vill Kommandoen geschéckt. Waart e Moment a probéiert nach eng Kéier."

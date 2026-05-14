@@ -129,7 +129,7 @@
             "message": "Η συσκευή είναι αποσυνδεδεμένη ή δεν είναι διαθέσιμη. Ελέγξτε τη σύνδεση δικτύου της συσκευής."
         },
         "service_temporarily_unavailable": {
-            "message": "Electrolux service is temporarily unavailable, please try again."
+            "message": "Η υπηρεσία της Electrolux δεν είναι προσωρινά διαθέσιμη. Παρακαλώ δοκιμάστε ξανά."
         },
         "command_rate_limited": {
             "message": "Στάλθηκαν πάρα πολλές εντολές. Περιμένετε λίγο και προσπαθήστε ξανά."

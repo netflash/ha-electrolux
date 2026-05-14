@@ -129,7 +129,7 @@
             "message": "Прилад відключений або недоступний. Перевірте підключення пристрою до мережі."
         },
         "service_temporarily_unavailable": {
-            "message": "Electrolux service is temporarily unavailable, please try again."
+            "message": "Сервісна служба Electrolux тимчасово недоступна. Спробуйте ще раз."
         },
         "command_rate_limited": {
             "message": "Надіслано забагато команд. Будь ласка, зачекайте трохи і спробуйте ще раз."

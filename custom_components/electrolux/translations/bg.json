@@ -129,7 +129,7 @@
             "message": "Уредът е изключен или не е наличен. Проверете мрежовата връзка на уреда."
         },
         "service_temporarily_unavailable": {
-            "message": "Electrolux service is temporarily unavailable, please try again."
+            "message": "Услугата на Electrolux временно не е достъпна. Моля, опитайте отново."
         },
         "command_rate_limited": {
             "message": "Изпратени са твърде много команди. Моля, изчакайте малко и опитайте отново."

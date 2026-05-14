@@ -129,7 +129,7 @@
             "message": "Apparaat is losgekoppeld of niet beschikbaar. Controleer de netwerkverbinding van het apparaat."
         },
         "service_temporarily_unavailable": {
-            "message": "Electrolux service is temporarily unavailable, please try again."
+            "message": "De Electrolux-service is tijdelijk niet beschikbaar. Probeer het later nog eens."
         },
         "command_rate_limited": {
             "message": "Te veel opdrachten verzonden. Wacht even en probeer het opnieuw."

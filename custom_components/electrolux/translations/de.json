@@ -129,7 +129,7 @@
             "message": "Gerät ist nicht angeschlossen oder nicht verfügbar. Überprüfen Sie die Netzwerkverbindung des Geräts."
         },
         "service_temporarily_unavailable": {
-            "message": "Electrolux service is temporarily unavailable, please try again."
+            "message": "Der Electrolux-Kundendienst ist vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut."
         },
         "command_rate_limited": {
             "message": "Zu viele Befehle gesendet. Bitte warten Sie einen Moment und versuchen Sie es erneut."

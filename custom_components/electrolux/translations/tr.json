@@ -129,7 +129,7 @@
             "message": "Cihazın bağlantısı kesilmiş veya kullanılamıyor. Cihazın ağ bağlantısını kontrol edin."
         },
         "service_temporarily_unavailable": {
-            "message": "Electrolux service is temporarily unavailable, please try again."
+            "message": "Electrolux servisi geçici olarak kullanılamıyor, lütfen daha sonra tekrar deneyin."
         },
         "command_rate_limited": {
             "message": "Çok fazla komut gönderildi. Lütfen biraz bekleyip tekrar deneyin."

@@ -129,7 +129,7 @@
             "message": "Apparatet er afbrudt eller ikke tilgængeligt. Kontroller apparatets netværksforbindelse."
         },
         "service_temporarily_unavailable": {
-            "message": "Electrolux service is temporarily unavailable, please try again."
+            "message": "Electrolux-kundeservice er midlertidigt utilgængelig. Prøv igen senere."
         },
         "command_rate_limited": {
             "message": "Der er sendt for mange kommandoer. Vent et øjeblik, og prøv igen."

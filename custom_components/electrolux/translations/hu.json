@@ -129,7 +129,7 @@
             "message": "A készülék le van választva, vagy nem elérhető. Ellenőrizze a készülék hálózati csatlakozását."
         },
         "service_temporarily_unavailable": {
-            "message": "Electrolux service is temporarily unavailable, please try again."
+            "message": "Az Electrolux ügyfélszolgálata jelenleg nem elérhető, kérjük, próbálja meg később újra."
         },
         "command_rate_limited": {
             "message": "Túl sok parancs lett elküldve. Kérjük, várjon egy kicsit, és próbálja újra."

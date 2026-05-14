@@ -129,7 +129,7 @@
             "message": "Seade on lahti ühendatud või pole saadaval. Kontrollige seadme võrguühendust."
         },
         "service_temporarily_unavailable": {
-            "message": "Electrolux service is temporarily unavailable, please try again."
+            "message": "Electroluxi teenus on ajutiselt kättesaamatu, palun proovi uuesti."
         },
         "command_rate_limited": {
             "message": "Saadeti liiga palju käske. Palun oodake veidi ja proovige uuesti."

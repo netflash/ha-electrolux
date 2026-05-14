@@ -129,7 +129,7 @@
             "message": "Naprava je odklopljena ali ni na voljo. Preverite omrežno povezavo naprave."
         },
         "service_temporarily_unavailable": {
-            "message": "Electrolux service is temporarily unavailable, please try again."
+            "message": "Storitev Electrolux je trenutno nedosegljiva, poskusite kasneje."
         },
         "command_rate_limited": {
             "message": "Preveč poslanih ukazov. Počakajte trenutek in poskusite znova."

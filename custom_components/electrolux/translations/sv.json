@@ -129,7 +129,7 @@
             "message": "Apparaten är frånkopplad eller inte tillgänglig. Kontrollera apparatens nätverksanslutning."
         },
         "service_temporarily_unavailable": {
-            "message": "Electrolux service is temporarily unavailable, please try again."
+            "message": "Electrolux service är tillfälligt otillgänglig. Vänligen försök igen."
         },
         "command_rate_limited": {
             "message": "För många kommandon skickade. Vänta ett ögonblick och försök igen."

@@ -129,7 +129,7 @@
             "message": "Laite on irrotettu tai ei ole käytettävissä. Tarkista laitteen verkkoyhteys."
         },
         "service_temporarily_unavailable": {
-            "message": "Electrolux service is temporarily unavailable, please try again."
+            "message": "Electrolux asiakaspalvelu ei ole tällä hetkellä käytettävissä. Yritä myöhemmin uudelleen."
         },
         "command_rate_limited": {
             "message": "Liian monta komentoa lähetetty. Odota hetki ja yritä uudelleen."

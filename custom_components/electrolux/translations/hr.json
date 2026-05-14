@@ -129,7 +129,7 @@
             "message": "Aparat je isključen ili nije dostupan. Provjerite mrežnu vezu uređaja."
         },
         "service_temporarily_unavailable": {
-            "message": "Electrolux service is temporarily unavailable, please try again."
+            "message": "Electrolux servis je privremeno nedostupan, molimo pokušajte ponovno."
         },
         "command_rate_limited": {
             "message": "Poslano je previše naredbi. Pričekajte trenutak i pokušajte ponovno."

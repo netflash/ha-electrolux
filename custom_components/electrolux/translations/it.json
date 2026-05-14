@@ -129,7 +129,7 @@
             "message": "L'apparecchio è disconnesso o non disponibile. Controllare la connessione di rete dell'apparecchio."
         },
         "service_temporarily_unavailable": {
-            "message": "Electrolux service is temporarily unavailable, please try again."
+            "message": "Il servizio Electrolux è temporaneamente non disponibile. Si prega di riprovare."
         },
         "command_rate_limited": {
             "message": "Troppi comandi inviati. Attendi un attimo e riprova."
