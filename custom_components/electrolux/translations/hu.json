@@ -128,6 +128,9 @@
         "appliance_disconnected": {
             "message": "A készülék le van választva, vagy nem elérhető. Ellenőrizze a készülék hálózati csatlakozását."
         },
+        "service_temporarily_unavailable": {
+            "message": "Electrolux service is temporarily unavailable, please try again."
+        },
         "command_rate_limited": {
             "message": "Túl sok parancs lett elküldve. Kérjük, várjon egy kicsit, és próbálja újra."
         },

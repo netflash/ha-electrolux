@@ -128,6 +128,9 @@
         "appliance_disconnected": {
             "message": "Устройство отключено или недоступно. Проверьте сетевое подключение устройства."
         },
+        "service_temporarily_unavailable": {
+            "message": "Electrolux service is temporarily unavailable, please try again."
+        },
         "command_rate_limited": {
             "message": "Отправлено слишком много команд. Пожалуйста, подождите немного и повторите попытку."
         },
