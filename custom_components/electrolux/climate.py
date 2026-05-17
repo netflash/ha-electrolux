@@ -13,6 +13,7 @@ from homeassistant.components.climate.const import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import UnitOfTemperature
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.restore_state import RestoreEntity
 
@@ -378,9 +379,28 @@ class ElectroluxClimate(ElectroluxEntity, ClimateEntity, RestoreEntity):
         return 1.0  # Default to 1 degree steps (not 0.5 which HA default)
 
     async def async_set_temperature(self, **kwargs: Any) -> None:
-        """Set new target temperature."""
+        """Set new target temperature.
+
+        Guard for off-state: the Electrolux API returns HTTP 500 when a
+        combined power-on + set-temperature command is sent in a single call.
+        If the appliance is currently off, split into sequential commands
+        (power on via set_hvac_mode, which re-applies the cached temperature)
+        or refuse if no hvac_mode was supplied.
+        """
         temperature = kwargs.get("temperature")
         if temperature is None:
+            return
+
+        hvac_mode = kwargs.get("hvac_mode")
+
+        if self.hvac_mode == HVACMode.OFF:
+            if hvac_mode is None:
+                raise HomeAssistantError(
+                    "Cannot set temperature while appliance is off"
+                )
+            # Cache new target first so async_set_hvac_mode applies it after powering on.
+            self._last_user_temperature = float(temperature)
+            await self.async_set_hvac_mode(hvac_mode)
             return
 
         self._last_user_temperature = float(temperature)
