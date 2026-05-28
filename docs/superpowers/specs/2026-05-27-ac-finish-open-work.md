@@ -146,3 +146,82 @@ Capture HA debug log per failed test, attach to corresponding issue.
 - #59 oven F/C path may differ from AC catalog shape; design choice (A vs B) deferred to implementation.
 - HA install via `scp` from main bypasses HACS tracking — must remember to revert when v3.6.8 lands.
 - Live testing on 3 units across multiple sessions — risk of state drift between tests; reset each unit to known state (off, 22°C, cool, fan auto) at start of each block.
+
+## Live test session — 2026-05-28 (office Bogong WSD27HWAI VM211_A_04.43.06)
+
+HA installed: `3.6.7+main.69804d7` (upstream main copied over HACS install).
+
+### Verified (already-merged fixes)
+
+| Test | Source | Result | Notes |
+|------|--------|--------|-------|
+| T1 physical OFF → `hvac_mode=off` | #62 | ✅ | SSE `applianceState=off` arrived; despite `mode=heat`, climate state correctly `off`. |
+| T2 physical heat → `select.mode=Heat` | #57 | ✅ | Lowercase `heat` matched case-insensitively, no duplicate option. |
+| T3 OFF not injected into mode options | #57 | ✅ | Options remain `[Auto, Cool, Heat, Dry, Fanonly]`. |
+| T9 `_last_user_temperature` across restart + power cycle | #48 | ✅ | Restored from RestoreEntity attr; re-applied on next HA-driven power-on. |
+
+### NOT verified
+
+- **T4 / T5** (PR #63 — `set_temp` while off): not run. Branch `fix/climate-set-temp-guard` not deployed; main currently has no off-guard, confirmed on S6 (HTTP 500 from API on `targetTemperatureC` while `applianceState=off`).
+
+### New bugs discovered
+
+#### Bug 1 — Trigger logic phantom-lies (root cause of #43)
+
+**Severity**: high. Source of talondnb's "device shows 16 after mode change" complaint and the 16-flicker on every HA mode change.
+
+`entity.py:573` (`_apply_triggers`) writes catalog mode-default `targetTemperatureC` into the local reported state cache on every mode change, with log line `"Trigger applied: mode=X → targetTemperatureC set to Y (will be confirmed by SSE)"`.
+
+For Bogong AC, the catalog mode-default table:
+
+| Mode | targetTemperatureC default | targetTemperatureF default |
+|------|----------------------------|----------------------------|
+| COOL | 16 | 60 |
+| HEAT | 16 | 60 |
+| AUTO | 16 | 60 |
+| DRY | 16 | 60 |
+| FANONLY | 23 | 73 |
+
+Live evidence: with device actually at `targetTemperatureC=28`, cycling `select.office_mode` heat → auto → dry → fan_only triggered `_apply_triggers` to write 16, 16, 16, 23 respectively into HA's reported cache. Force-poll confirmed device kept 28 throughout. SSE never confirms because device didn't change.
+
+HA UI therefore lies until next coordinator poll (every 6 h) or until a temp-setting action arrives. Automations reading `temperature` see false setpoint changes.
+
+**Fix candidates**:
+1. Stop writing trigger defaults into `reported` state for `targetTemperatureC` / `targetTemperatureF`. Catalog defaults are init hints, not live state.
+2. Skip trigger write when the property already has a value in `reported`.
+3. For climate-card path, the existing `#48` re-apply masks the dip but causes a brief flicker; for select-dropdown path, no re-apply, so phantom value persists.
+
+#### Bug 2 — `_last_user_temperature` cache pollution
+
+`climate.async_set_temperature` writes `self._last_user_temperature = float(temperature)` BEFORE `await self._send_command(...)`. If the API rejects (e.g. HTTP 500 on off device), the cache keeps the bad value. Next HA-driven power-on / mode change re-applies the polluted value via #48's re-apply path.
+
+Reproduced live (S6 → S7): drag temp to 19 while off → API 500 → HA cache = 19. Subsequent `set_hvac_mode=cool` re-applied 19 instead of the previous 22.
+
+**Fix**: cache only after successful command, or roll back on exception. PR #63 happens to fix this for the off-with-hvac_mode branch but not for the fall-through path.
+
+#### Bug 3 — `hvac_mode` kwarg ignored when device ON
+
+`climate.set_temperature(temperature=X, hvac_mode=Y)` is a standard HA combined call. Main code drops `hvac_mode` when device is ON (only handled inside PR #63's off-state branch). Reproduced S8: `temperature=28, hvac_mode=heat` while device cool → only temp command sent, mode stayed cool.
+
+**Fix**: always honour `hvac_mode` kwarg if provided; route through `async_set_hvac_mode` first when current and requested differ.
+
+#### Bug 4 — `number.async_set_native_value` missing off-guard
+
+PR #63 only patches `climate.py`. Direct drag of `number.<name>_target_temperature_c` while `applianceState=off` still hits API HTTP 500. PR #63 should be extended to the number entity path.
+
+#### Bug 5 — `targetTemperatureC` slider not disabled in fan_only / dry
+
+While `mode=fan_only` (or `dry`), API rejects `targetTemperatureC` commands with HTTP 406 `COMMAND_VALIDATION_ERROR: Capability disabled`. UI should disable the temp slider in those modes (or warn via `extra_state_attributes`). Repro: any temp drag while `mode=fan_only` → 406 toast.
+
+### Updated follow-up list
+
+After this session:
+
+1. Deploy PR #63 branch, run T4/T5, mark PR ready.
+2. **Bug 1 (trigger phantom-lies)**: highest priority — fixes #43, eliminates 16-flicker. Open issue + draft PR.
+3. **Bug 2 (cache pollution)**: include in PR #63 scope (already partially addressed) or separate small PR.
+4. **Bug 3 (`hvac_mode` ignored)**: separate PR; behaviour change, needs tests.
+5. **Bug 4 (number off-guard)**: extend PR #63.
+6. **Bug 5 (fan_only/dry slider)**: separate PR; capability-aware availability on number entities.
+7. Comment #43 with summary of findings (#62 fixes the SSE-side, but #43 root cause is Bug 1, separate PR coming).
+
