@@ -225,3 +225,37 @@ After this session:
 6. **Bug 5 (fan_only/dry slider)**: separate PR; capability-aware availability on number entities.
 7. Comment #43 with summary of findings (#62 fixes the SSE-side, but #43 root cause is Bug 1, separate PR coming).
 
+## Progress checklist
+
+- [x] HA upgraded to `3.6.7+main.69804d7` (snapshot at `~/electrolux-3.6.7-backup-20260528-170005.tar.gz` on HAOS)
+- [x] T1 verified (#62)
+- [x] T2 verified (#57)
+- [x] T3 verified (#57)
+- [x] T9 verified (#48 — final state correct, but Bug 2 cache-pollution exposed)
+- [ ] T4 / T5 (#63) — needs branch deployed
+- [x] Bug 1 filed → [#70](https://github.com/TTLucian/ha-electrolux/issues/70)
+- [x] Bug 3 filed → [#71](https://github.com/TTLucian/ha-electrolux/issues/71)
+- [x] Bug 5 filed → [#72](https://github.com/TTLucian/ha-electrolux/issues/72)
+- [x] Bugs 2 + 4 commented on PR #63
+- [ ] Comment on #43 with #70 cross-reference + #62 partial-fix note
+- [ ] Implement #58 fix (disabled-mode read-only display)
+- [ ] Implement #59 fix (target_temperature_f sync) — workaround already in place: user disabled `_f` entities on `office`. Other 2 units may still have them enabled.
+- [ ] Implement Bug 1 / #70 fix (highest priority)
+- [ ] Cleanup: gitignore `.envrc`, delete dead local branches, sync `main`
+
+## Session 2026-05-28 — what's done
+
+- HA install bumped from HACS 3.6.7 → upstream main. Backup tarball on HAOS.
+- Live-tested 4 already-merged fixes (PASS).
+- Cycled office through all 5 modes via `select.<name>_mode` to map catalog mode-default trigger table.
+- Force-poll confirmed device-side `targetTemperatureC` unchanged across all mode transitions; HA UI lied due to local trigger.
+- 5 bugs identified, 3 filed as new issues (#70, #71, #72), 2 commented on PR #63.
+- Plan + findings committed on `docs/ac-finish-plan` branch.
+- Office unit returned to `off / 22°C` baseline.
+
+## Resume points (next session)
+
+- Quickest unblock: comment #43 referencing #70 so talondnb knows root cause is identified.
+- Highest-impact code work: implement #70 fix (Bug 1) — it eliminates the 16-flicker and the phantom UI state, which are the most user-visible symptoms across all sessions.
+- Cleanest order if doing multiple PRs: #70 first (largest impact, separable), then expand PR #63 with Bug 2 + Bug 4 (small additions, same touch path), then #59 (`_f` sync, separate code path), then #58 (disabled-mode display), then #71 (`hvac_mode` ignored, behaviour change).
+
