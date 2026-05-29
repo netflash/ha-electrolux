@@ -243,12 +243,16 @@ After this session:
 - [x] PR #73 opened for #70 (trigger phantom-lies fix), CI green, live-verified on Bogong office
 - [x] PR #73 Linus review pass — refactor (heuristic inverted to `keys() == {"default"}`, schema_keys constant + binding removed, docstring trimmed)
 - [x] Comment on #43 with #70 cross-reference + #62 partial-fix note
-- [ ] Implement #58 fix (disabled-mode read-only display)
-- [ ] Implement #59 fix (target_temperature_f sync) — workaround already in place: user disabled `_f` entities on `office`. Other 2 units may still have them enabled.
 - [x] PR #74 opened for #71 (`hvac_mode` kwarg on ON device); 4 new tests; live-verified `cool 22 → heat 28` in single `set_temperature` call
 - [x] PR #74 Linus review pass — tightened OFF guard against `hvac_mode=OFF` (would have fallen through to simple-set on off device → HTTP 500); added rollback test for on→on path
-- [ ] Implement #72 fix (number availability in fan_only/dry — capability-aware availability)
-- [ ] Cleanup: gitignore `.envrc`, delete dead local branches, sync `main`
+- [x] PR #75 opened for #72 (number unavailable when trigger-disabled). Live-verified fan_only → unavailable on Bogong. Also fixed case-insensitive comparison in `_is_disabled_by_trigger` (catalog UPPER vs device camelCase).
+- [x] PR #75 Linus review pass — broadened `available=False` to apply to any trigger-disabled number entity, not just AC temp attrs (3-of-4 layers flagged the gate as wrong abstraction).
+- [x] **All four PRs MERGED upstream** (within ~30 min of submission): #63 → #73 → #74 → #75. Awaiting v3.6.8 release tag.
+- [x] HA install bumped to upstream main `3.6.7+main.1b5e2bd` (post-merge code).
+- [x] Comment on #43 posted with full status — all five linked AC fixes (#62, #63, #70, #71, #72) merged.
+- [x] Local cleanup: synced `main` to upstream, force-pushed `origin/main`, deleted 13 merged local branches, added `.envrc`/`.claude/`/`.subtask/`/diagnostics to `.git/info/exclude` (local-only — keeps fork's `.gitignore` aligned with upstream).
+- [ ] Implement #58 fix (disabled-mode read-only display) — last remaining open AC issue I filed
+- [ ] Implement #59 fix (target_temperature_f sync) — workaround already in place: user disabled `_f` entities on `office`. Other 2 units may still have them enabled.
 
 ## Session 2026-05-28 — what's done
 
@@ -285,4 +289,11 @@ After this session:
 - Office unit left `off / 22°C` baseline.
 - PR #74 opened for #71 (`hvac_mode` honour on ON-device). Stacked on PR #63. 4 new tests, 1469 total green. Live-verified `cool 22 → heat 28` single call.
 - PR #74 Linus-reviewed; layer 2 found GARBAGE bug — `hvac_mode=OFF` while OFF would have fallen through to simple-set on off device; tightened guard. Added rollback test for on→on path.
+- PR #75 opened for #72 — `number.available` now returns `False` whenever a capability trigger marks the attribute disabled. Also fixed case-insensitive comparison in `_is_disabled_by_trigger` (catalog uses `FANONLY`, device reports `fanOnly`). 3 new tests.
+- PR #75 deployed as `3.6.7+pr75v2`. Live-verified `mode=Fanonly` → `number.office_target_temperature_c=unavailable` on Bogong; cool/dry remained settable.
+- PR #75 Linus-reviewed; broadened the `available=False` rule to all number entities (not just AC temp attrs) per layer-2 abstraction critique. CI green.
+- **Owner merged all four PRs (#63, #73, #74, #75) within 30 min of CI passing.** No reviewer feedback needed.
+- HA install bumped to upstream main commit `1b5e2bd` (post-merge tip). All four fixes now live.
+- Followup comment on #43 posted summarising the five-PR fix chain (#62, #63, #70 via #73, #71 via #74, #72 via #75).
+- Local cleanup: synced `main` to upstream HEAD; force-pushed `origin/main`; deleted 13 merged local branches; added contributor-only files (`.envrc`, `.claude/`, `.subtask/`, diagnostics, gh-sandbox) to `.git/info/exclude` so the fork's `.gitignore` stays aligned with upstream's.
 
