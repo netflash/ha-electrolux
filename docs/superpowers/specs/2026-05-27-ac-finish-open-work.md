@@ -238,11 +238,15 @@ After this session:
 - [x] Bug 5 filed → [#72](https://github.com/TTLucian/ha-electrolux/issues/72)
 - [x] Bugs 2 + 4 folded into PR #63 (cache rollback + number off-guard, optimistic `mode=OFF` covered)
 - [x] PR #63 ready for review, body updated, 7 new tests, 1465 total green
-- [ ] CI checks on PR #63 — being triaged
-- [ ] Comment on #43 with #70 cross-reference + #62 partial-fix note
+- [x] CI checks on PR #63 green (ci, validate/hassfest, HACS, update_release_draft)
+- [x] PR #63 Linus review pass — refactor (cached_temp rename, `_AC_TEMPERATURE_ATTRS` const, drop isinstance paranoia, delete bare-except test)
+- [x] PR #73 opened for #70 (trigger phantom-lies fix), CI green, live-verified on Bogong office
+- [x] PR #73 Linus review pass — refactor (heuristic inverted to `keys() == {"default"}`, schema_keys constant + binding removed, docstring trimmed)
+- [x] Comment on #43 with #70 cross-reference + #62 partial-fix note
 - [ ] Implement #58 fix (disabled-mode read-only display)
 - [ ] Implement #59 fix (target_temperature_f sync) — workaround already in place: user disabled `_f` entities on `office`. Other 2 units may still have them enabled.
-- [ ] Implement Bug 1 / #70 fix (highest priority)
+- [ ] Implement #71 fix (`hvac_mode` kwarg on ON device — small, follows from PR #63 helper logic)
+- [ ] Implement #72 fix (number availability in fan_only/dry — capability-aware availability)
 - [ ] Cleanup: gitignore `.envrc`, delete dead local branches, sync `main`
 
 ## Session 2026-05-28 — what's done
@@ -271,6 +275,11 @@ After this session:
 - HA install bumped through `3.6.7+pr63.28516af` → `3.6.7+pr63v3` for live verification.
 - T4 / T5 / T6 verified live on Bogong office unit.
 - PR body rewritten with summary, test plan checked, live verification table.
-- PR marked ready for review.
+- PR marked ready for review; CI green.
+- PR #63 Linus-reviewed; cosmetic refactor pushed (cached_temp rename, `_AC_TEMPERATURE_ATTRS` constant, drop `isinstance` paranoia in off-detection, delete bare-except "passes guard when running" test). CI green.
+- PR #73 opened for #70 — `_apply_triggered_updates` now skips default-write when the action is a constraints declaration (`keys() != {"default"}`). 2 new tests, 1461 total green.
+- PR #73 deployed as `3.6.7+pr70.draft`, live cycle `cool 24 → heat → fan_only` produced zero phantom 16/23 (vs `16, 16, 23` on main).
+- PR #73 Linus-reviewed; heuristic inverted to be future-proof against new schema fields, schema_keys constant + intermediate binding removed, docstring trimmed. CI green.
+- Comment on #43 posted: explains #62 covers SSE/power-off path, #70 explains the residual phantom UI symptom and is being fixed in PR #73.
 - Office unit left `off / 22°C` baseline.
 
