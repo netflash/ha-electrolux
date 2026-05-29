@@ -245,7 +245,8 @@ After this session:
 - [x] Comment on #43 with #70 cross-reference + #62 partial-fix note
 - [ ] Implement #58 fix (disabled-mode read-only display)
 - [ ] Implement #59 fix (target_temperature_f sync) — workaround already in place: user disabled `_f` entities on `office`. Other 2 units may still have them enabled.
-- [ ] Implement #71 fix (`hvac_mode` kwarg on ON device — small, follows from PR #63 helper logic)
+- [x] PR #74 opened for #71 (`hvac_mode` kwarg on ON device); 4 new tests; live-verified `cool 22 → heat 28` in single `set_temperature` call
+- [x] PR #74 Linus review pass — tightened OFF guard against `hvac_mode=OFF` (would have fallen through to simple-set on off device → HTTP 500); added rollback test for on→on path
 - [ ] Implement #72 fix (number availability in fan_only/dry — capability-aware availability)
 - [ ] Cleanup: gitignore `.envrc`, delete dead local branches, sync `main`
 
@@ -282,4 +283,6 @@ After this session:
 - PR #73 Linus-reviewed; heuristic inverted to be future-proof against new schema fields, schema_keys constant + intermediate binding removed, docstring trimmed. CI green.
 - Comment on #43 posted: explains #62 covers SSE/power-off path, #70 explains the residual phantom UI symptom and is being fixed in PR #73.
 - Office unit left `off / 22°C` baseline.
+- PR #74 opened for #71 (`hvac_mode` honour on ON-device). Stacked on PR #63. 4 new tests, 1469 total green. Live-verified `cool 22 → heat 28` single call.
+- PR #74 Linus-reviewed; layer 2 found GARBAGE bug — `hvac_mode=OFF` while OFF would have fallen through to simple-set on off device; tightened guard. Added rollback test for on→on path.
 
