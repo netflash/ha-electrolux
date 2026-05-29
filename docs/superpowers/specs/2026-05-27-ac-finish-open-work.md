@@ -232,11 +232,13 @@ After this session:
 - [x] T2 verified (#57)
 - [x] T3 verified (#57)
 - [x] T9 verified (#48 — final state correct, but Bug 2 cache-pollution exposed)
-- [ ] T4 / T5 (#63) — needs branch deployed
+- [x] T4 / T5 verified live (#63), `3.6.7+pr63v3`
 - [x] Bug 1 filed → [#70](https://github.com/TTLucian/ha-electrolux/issues/70)
 - [x] Bug 3 filed → [#71](https://github.com/TTLucian/ha-electrolux/issues/71)
 - [x] Bug 5 filed → [#72](https://github.com/TTLucian/ha-electrolux/issues/72)
-- [x] Bugs 2 + 4 commented on PR #63
+- [x] Bugs 2 + 4 folded into PR #63 (cache rollback + number off-guard, optimistic `mode=OFF` covered)
+- [x] PR #63 ready for review, body updated, 7 new tests, 1465 total green
+- [ ] CI checks on PR #63 — being triaged
 - [ ] Comment on #43 with #70 cross-reference + #62 partial-fix note
 - [ ] Implement #58 fix (disabled-mode read-only display)
 - [ ] Implement #59 fix (target_temperature_f sync) — workaround already in place: user disabled `_f` entities on `office`. Other 2 units may still have them enabled.
@@ -256,6 +258,19 @@ After this session:
 ## Resume points (next session)
 
 - Quickest unblock: comment #43 referencing #70 so talondnb knows root cause is identified.
-- Highest-impact code work: implement #70 fix (Bug 1) — it eliminates the 16-flicker and the phantom UI state, which are the most user-visible symptoms across all sessions.
-- Cleanest order if doing multiple PRs: #70 first (largest impact, separable), then expand PR #63 with Bug 2 + Bug 4 (small additions, same touch path), then #59 (`_f` sync, separate code path), then #58 (disabled-mode display), then #71 (`hvac_mode` ignored, behaviour change).
+- Highest-impact code work remaining: implement #70 fix (Bug 1) — it eliminates the 16-flicker and the phantom UI state across all mode-change paths, which are the most user-visible symptoms across all sessions.
+- PR #63 next steps: triage any CI failures (linters, schema checks), respond to review feedback if any.
+- Order of remaining PRs: #70 first (largest impact, separable), then #59 (`_f` sync, separate code path), then #58 (disabled-mode display), then #71 (`hvac_mode` on-state honour), then #72 (number availability in fan_only/dry).
+
+## Session 2026-05-29 — what's done
+
+- PR #63 branch rebased onto current upstream/main and force-pushed.
+- Bugs 2 (cache pollution) and 4 (number off-guard) folded into PR #63 with the optimistic `mode=OFF` window covered.
+- 7 new tests added (4 climate, 3 number); 1465 tests pass locally.
+- Translation key `set_temperature_while_off` added to `strings.json` and `translations/en.json`.
+- HA install bumped through `3.6.7+pr63.28516af` → `3.6.7+pr63v3` for live verification.
+- T4 / T5 / T6 verified live on Bogong office unit.
+- PR body rewritten with summary, test plan checked, live verification table.
+- PR marked ready for review.
+- Office unit left `off / 22°C` baseline.
 
