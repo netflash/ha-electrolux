@@ -251,8 +251,15 @@ After this session:
 - [x] HA install bumped to upstream main `3.6.7+main.1b5e2bd` (post-merge code).
 - [x] Comment on #43 posted with full status — all five linked AC fixes (#62, #63, #70, #71, #72) merged.
 - [x] Local cleanup: synced `main` to upstream, force-pushed `origin/main`, deleted 13 merged local branches, added `.envrc`/`.claude/`/`.subtask/`/diagnostics to `.git/info/exclude` (local-only — keeps fork's `.gitignore` aligned with upstream).
-- [ ] Implement #58 fix (disabled-mode read-only display) — last remaining open AC issue I filed
-- [ ] Implement #59 fix (target_temperature_f sync) — workaround already in place: user disabled `_f` entities on `office`. Other 2 units may still have them enabled.
+- [x] PR #77 opened for #58 (disabled-mode read-only display). Live-verified `mode=autoClean` → `Autoclean` (was `unknown`); transient label disappears on mode change. CI green.
+- [x] PR #77 Linus review pass — collapsed duplicate disabled-detection by having `options` consume `current_option` (single source of truth).
+- [x] PR #78 opened for #59 (target_temperature_f sync). Read derives F from C, write redirects F→C. CI green.
+- [x] PR #78 v1 Linus review pass — fixed wrong-container guard, missing rate-limit/connectivity, hardcoded DAM wrapper, inline magic numbers.
+- [x] PR #78 v2 Linus review pass — added optimistic update post-redirect, symmetrized write guard with read (`_f is None`), `try/except` around float conversion.
+- [x] **v3.6.8 released upstream** (2026-05-29 11:13 UTC) with PRs #62/#63/#70/#71/#72.
+- [x] HA install: HACS-tracked v3.6.8 base + `#77 + #78` overlay (cherry-picked onto v3.6.8 tag, manifest version stays `3.6.8` so HA loads). Will revert to plain HACS on v3.6.9 release.
+- [ ] Owner merges PR #77 + #78
+- [ ] On v3.6.9 release: revert HA install to plain HACS, re-enable user-disabled `_f` entities on `office`
 
 ## Session 2026-05-28 — what's done
 
@@ -296,4 +303,11 @@ After this session:
 - HA install bumped to upstream main commit `1b5e2bd` (post-merge tip). All four fixes now live.
 - Followup comment on #43 posted summarising the five-PR fix chain (#62, #63, #70 via #73, #71 via #74, #72 via #75).
 - Local cleanup: synced `main` to upstream HEAD; force-pushed `origin/main`; deleted 13 merged local branches; added contributor-only files (`.envrc`, `.claude/`, `.subtask/`, diagnostics, gh-sandbox) to `.git/info/exclude` so the fork's `.gitignore` stays aligned with upstream's.
+- **v3.6.8 released upstream** (2026-05-29 11:13 UTC) — first release containing all four merged AC fixes plus #62.
+- PR #77 opened for #58 (disabled-mode read-only display). 3 new tests; live-verified on Bogong by toggling `switch.office_auto_clean_trigger` — `select.office_mode` showed `Autoclean` (was `unknown`) and dropped the transient on mode change. CI green.
+- PR #77 Linus-reviewed; collapsed duplicated disabled-detection logic by having `options` reuse `current_option` as canonical source.
+- PR #78 opened for #59 (target_temperature_f sync). Read-derive F from live C; write redirects F→C with proper format/wrapping. 5 new tests; live-verified on K unit (was 16.0, now derives correctly).
+- PR #78 v1 Linus-reviewed; multiple GARBAGE/BAD TASTE findings — wrong-container guard `"targetTemperatureC" in self.capability` (capability marker only worked in test fixture, never in production), redirect skipped rate-limit + connectivity, hardcoded DAM wrapping, inline math instead of util.py helpers. All fixed.
+- PR #78 v2 Linus-reviewed; missing optimistic update on `targetTemperatureC` post-redirect (slider would snap back), write guard asymmetric vs read, ungated float conversion. All fixed.
+- HA install: switched from `upstream/main 1b5e2bd` to **HACS v3.6.8 + #77/#78 overlay**. Cherry-picked both PR commits on top of the v3.6.8 tag, kept manifest version as `3.6.8` (HA blocked load on `3.6.8+pr77+pr78` — invalid semver). Will revert to plain HACS once v3.6.9 lands.
 
