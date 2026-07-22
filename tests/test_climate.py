@@ -654,7 +654,10 @@ class TestElectroluxClimate:
 
     @pytest.mark.asyncio
     async def test_async_set_hvac_mode_fan_only(self, climate_entity):
-        """Test setting HVAC mode to FAN_ONLY."""
+        """Test setting HVAC mode to FAN_ONLY (no cached temperature — baseline path)."""
+        # _last_user_temperature is None here, so temperature was never sent even before
+        # the FAN_ONLY guard was added. See test_hvac_mode_fan_only_skips_temperature_resend
+        # for the case that actually covers the #142 bug (cached temp present).
         climate_entity._send_command = AsyncMock()
 
         await climate_entity.async_set_hvac_mode(HVACMode.FAN_ONLY)
@@ -701,6 +704,8 @@ class TestElectroluxClimate:
         calls = climate_entity._send_command.call_args_list
         assert calls[0][0] == ("executeCommand", "ON")
         assert calls[1][0] == ("mode", "FANONLY")
+        # Only the mode optimistic update — no temperature update.
+        assert climate_entity._apply_optimistic_update.call_count == 1
 
     @pytest.mark.asyncio
     async def test_hvac_mode_dry_skips_temperature_resend(self, climate_entity):
@@ -715,6 +720,8 @@ class TestElectroluxClimate:
         calls = climate_entity._send_command.call_args_list
         assert calls[0][0] == ("executeCommand", "ON")
         assert calls[1][0] == ("mode", "DRY")
+        # Only the mode optimistic update — no temperature update.
+        assert climate_entity._apply_optimistic_update.call_count == 1
 
     @pytest.mark.asyncio
     async def test_hvac_mode_on_no_cached_temp_skips_resend(self, climate_entity):

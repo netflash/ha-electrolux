@@ -23,6 +23,11 @@ from .util import execute_command_with_error_handling, format_command_for_applia
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
+# Modes where the Electrolux API disables targetTemperatureC (returns 406 Capability disabled).
+_MODES_WITHOUT_TEMPERATURE: frozenset[HVACMode] = frozenset(
+    {HVACMode.FAN_ONLY, HVACMode.DRY}
+)
+
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -476,7 +481,6 @@ class ElectroluxClimate(ElectroluxEntity, ClimateEntity, RestoreEntity):
 
         # Re-apply last user temperature — device resets to min on power-off.
         # Skip for modes where the API disables targetTemperatureC (FAN_ONLY, DRY).
-        _MODES_WITHOUT_TEMPERATURE = frozenset({HVACMode.FAN_ONLY, HVACMode.DRY})
         if (
             self._last_user_temperature is not None
             and hvac_mode not in _MODES_WITHOUT_TEMPERATURE
