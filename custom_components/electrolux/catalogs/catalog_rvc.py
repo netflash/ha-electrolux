@@ -104,11 +104,13 @@ CATALOG_RVC: dict[str, ElectroluxDevice] = {
         },
     ),
     # Power/cleaning intensity mode.
-    # The API reports an integer range (min=1, max=3). Human-readable labels
-    # (Eco / Standard / Power) are confirmed by user reports for the Pure i9
-    # line — see https://github.com/TTLucian/ha-electrolux/issues/82.
+    # The API reports an integer range (min=1, max=3 for 3-mode, min=1, max=2 for 2-mode).
+    # Human-readable labels are confirmed by user reports:
+    # - 3-mode devices (Pure i9.2): Eco / Standard / Power
+    # - 2-mode devices (Pure i9): Eco / Power
+    # See https://github.com/TTLucian/ha-electrolux/issues/81
     # The vacuum platform reads the device's actual min/max to build the
-    # correct speed list per model (some Pure i9 variants only expose 2 modes).
+    # correct speed list per model and select the appropriate mapping.
     "powerMode": ElectroluxDevice(
         capability_info={
             "access": "readwrite",

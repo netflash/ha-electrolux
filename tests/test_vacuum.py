@@ -130,14 +130,26 @@ class TestElectroluxVacuumPurei9:
     def test_fan_speed_list_respects_device_capability_range(self):
         """fan_speed_list only includes modes within the device's capability range."""
         vacuum = _make_purei9_vacuum()
-        # Simulate a device that only supports powerMode 1-2 (e.g. ECO + Standard)
+        # Simulate a 2-mode device that only supports powerMode 1-2 (Eco + Power)
         vacuum.get_appliance.data.get_capability = lambda key: (
             {"access": "readwrite", "type": "int", "min": 1, "max": 2}
             if key == "powerMode"
             else vacuum.get_appliance.data.capabilities.get(key)
         )
 
-        assert vacuum.fan_speed_list == ["Eco", "Standard"]
+        assert vacuum.fan_speed_list == ["Eco", "Power"]
+
+    def test_fan_speed_list_3mode_device(self):
+        """fan_speed_list returns all 3 modes for 3-mode devices."""
+        vacuum = _make_purei9_vacuum()
+        # Simulate a 3-mode device that supports powerMode 1-3 (Eco + Standard + Power)
+        vacuum.get_appliance.data.get_capability = lambda key: (
+            {"access": "readwrite", "type": "int", "min": 1, "max": 3}
+            if key == "powerMode"
+            else vacuum.get_appliance.data.capabilities.get(key)
+        )
+
+        assert vacuum.fan_speed_list == ["Eco", "Standard", "Power"]
 
     def test_battery_level_scales_purei9_levels_to_percentage(self):
         vacuum = _make_purei9_vacuum()

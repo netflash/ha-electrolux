@@ -115,9 +115,18 @@ _MODERN_FAN_SPEEDS: list[str] = [
 # PUREi9 uses integer powerMode (1-3) in the API but we expose human-readable
 # labels to the user.  The bidirectional mapping keeps the vacuum entity and
 # the command sender in sync.
+# 3-mode devices (Pure i9.2): {1: "Eco", 2: "Standard", 3: "Power"}
+# 2-mode devices (Pure i9):   {1: "Eco", 2: "Power"}
+# See https://github.com/TTLucian/ha-electrolux/issues/81
 _PUREI9_FAN_SPEEDS: list[str] = ["Eco", "Standard", "Power"]
-_PUREI9_SPEED_TO_INT: dict[str, int] = {"Eco": 1, "Standard": 2, "Power": 3}
-_PUREI9_INT_TO_SPEED: dict[int, str] = {v: k for k, v in _PUREI9_SPEED_TO_INT.items()}
+_PUREI9_SPEED_TO_INT_3MODE: dict[str, int] = {"Eco": 1, "Standard": 2, "Power": 3}
+_PUREI9_INT_TO_SPEED_3MODE: dict[int, str] = {
+    v: k for k, v in _PUREI9_SPEED_TO_INT_3MODE.items()
+}
+_PUREI9_SPEED_TO_INT_2MODE: dict[str, int] = {"Eco": 1, "Power": 2}
+_PUREI9_INT_TO_SPEED_2MODE: dict[int, str] = {
+    v: k for k, v in _PUREI9_SPEED_TO_INT_2MODE.items()
+}
 
 
 # ── Platform setup ────────────────────────────────────────────────────────────
@@ -348,7 +357,8 @@ class ElectroluxVacuum(ElectroluxEntity, StateVacuumEntity):
         """Return the current fan speed / vacuum mode.
 
         PUREi9 reports an integer powerMode (1-3); translate to the
-        human-readable label (Eco / Standard / Power).
+        human-readable label (Eco / Standard / Power for 3-mode,
+        Eco / Power for 2-mode).
         """
         attr = "powerMode" if self._is_purei9 else "vacuumMode"
         value = self.get_state_attr(attr)
@@ -356,7 +366,13 @@ class ElectroluxVacuum(ElectroluxEntity, StateVacuumEntity):
             return None
         if self._is_purei9:
             try:
-                return _PUREI9_INT_TO_SPEED.get(int(value))
+                pm_min, pm_max = self._purei9_power_mode_range()
+                int_to_speed = (
+                    _PUREI9_INT_TO_SPEED_2MODE
+                    if pm_max == 2
+                    else _PUREI9_INT_TO_SPEED_3MODE
+                )
+                return int_to_speed.get(int(value))
             except ValueError, TypeError:
                 return None
         return str(value)
@@ -368,17 +384,17 @@ class ElectroluxVacuum(ElectroluxEntity, StateVacuumEntity):
         For PUREi9 the speed list is built dynamically from the device's
         actual powerMode capability (min/max), so that models with only
         2 modes (e.g. ECO + POWER) show the correct subset.
-        See https://github.com/TTLucian/ha-electrolux/issues/82
+        See https://github.com/TTLucian/ha-electrolux/issues/81
         """
         if not self._is_purei9:
             return _MODERN_FAN_SPEEDS
 
         pm_min, pm_max = self._purei9_power_mode_range()
-        return [
-            _PUREI9_INT_TO_SPEED[i]
-            for i in range(pm_min, pm_max + 1)
-            if i in _PUREI9_INT_TO_SPEED
-        ]
+        # Use 2-mode mapping for devices with max=2, otherwise 3-mode
+        int_to_speed = (
+            _PUREI9_INT_TO_SPEED_2MODE if pm_max == 2 else _PUREI9_INT_TO_SPEED_3MODE
+        )
+        return [int_to_speed[i] for i in range(pm_min, pm_max + 1) if i in int_to_speed]
 
     def _purei9_power_mode_range(self) -> tuple[int, int]:
         """Return the (min, max) powerMode range from device capabilities.
@@ -437,12 +453,19 @@ class ElectroluxVacuum(ElectroluxEntity, StateVacuumEntity):
     async def async_set_fan_speed(self, fan_speed: str, **kwargs: Any) -> None:
         """Set the vacuum mode / suction level.
 
-        PUREi9 accepts the human-readable label (Eco / Standard / Power)
-        and translates it back to the integer the API expects.
+        PUREi9 accepts the human-readable label (Eco / Standard / Power for
+        3-mode, Eco / Power for 2-mode) and translates it back to the integer
+        the API expects.
         """
         attr = "powerMode" if self._is_purei9 else "vacuumMode"
         if self._is_purei9:
-            value: Any = _PUREI9_SPEED_TO_INT.get(fan_speed)
+            pm_min, pm_max = self._purei9_power_mode_range()
+            speed_to_int = (
+                _PUREI9_SPEED_TO_INT_2MODE
+                if pm_max == 2
+                else _PUREI9_SPEED_TO_INT_3MODE
+            )
+            value: Any = speed_to_int.get(fan_speed)
             if value is None:
                 # Fall back to direct integer for backward compatibility
                 try:
@@ -451,7 +474,7 @@ class ElectroluxVacuum(ElectroluxEntity, StateVacuumEntity):
                     _LOGGER.error(
                         "Invalid PUREi9 fan speed '%s' — expected one of %s",
                         fan_speed,
-                        _PUREI9_FAN_SPEEDS,
+                        list(speed_to_int.keys()),
                     )
                     return
         else:
@@ -469,18 +492,23 @@ class ElectroluxVacuum(ElectroluxEntity, StateVacuumEntity):
         Zone UUIDs and the persistent map UUID are found in the integration
         diagnostics (mapData/mapMatch/zones and persistentMapsCreated/mapId).
 
-        The power_mode parameter accepts either the integer (1-3) or the
-        human-readable label (Eco / Standard / Power).
+        The power_mode parameter accepts either the integer (1-3 or 1-2) or the
+        human-readable label (Eco / Standard / Power for 3-mode, Eco / Power for 2-mode).
         """
         if not self.get_appliance.data.get_capability("CustomPlay"):
             raise HomeAssistantError("Zone cleaning is not supported on this device.")
+
+        pm_min, pm_max = self._purei9_power_mode_range()
+        speed_to_int = (
+            _PUREI9_SPEED_TO_INT_2MODE if pm_max == 2 else _PUREI9_SPEED_TO_INT_3MODE
+        )
 
         # Translate human-readable labels to the integer the API expects
         api_zones = []
         for z in zones:
             pm = z["power_mode"]
             if isinstance(pm, str):
-                pm = _PUREI9_SPEED_TO_INT.get(pm, 1)
+                pm = speed_to_int.get(pm, 1)
             api_zones.append({"goZonesId": z["zone_id"], "powerMode": pm})
 
         command = {
