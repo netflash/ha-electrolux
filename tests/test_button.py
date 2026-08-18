@@ -713,6 +713,46 @@ class TestExecuteStatesFromCapabilities:
         assert "IDLE" not in derived["START"]
         assert "IDLE" in DRYER_EXECUTE_STATES["START"]
 
+    def test_entity_source_looks_up_nested_appliance_state(self):
+        """Structured ovens store triggers under 'upperOven/applianceState'."""
+        caps = {
+            "upperOven/applianceState": {
+                "triggers": [
+                    {
+                        "action": {"executeCommand": {"values": {"START": {}}}},
+                        "condition": {
+                            "operand_1": "value",
+                            "operand_2": "OFF",
+                            "operator": "eq",
+                        },
+                    }
+                ]
+            }
+        }
+        assert execute_states_from_capabilities(caps, entity_source="upperOven") == {
+            "START": ["OFF"]
+        }
+
+    def test_entity_source_falls_back_to_root_appliance_state(self):
+        """When the nested key is absent, the root applianceState is used."""
+        caps = {
+            "applianceState": {
+                "triggers": [
+                    {
+                        "action": {"executeCommand": {"values": {"START": {}}}},
+                        "condition": {
+                            "operand_1": "value",
+                            "operand_2": "READY_TO_START",
+                            "operator": "eq",
+                        },
+                    }
+                ]
+            }
+        }
+        assert execute_states_from_capabilities(caps, entity_source="upperOven") == {
+            "START": ["READY_TO_START"]
+        }
+
     @pytest.mark.parametrize(
         "capabilities",
         [
@@ -813,8 +853,8 @@ class TestExecuteStatesFromCapabilities:
         assert execute_states_from_capabilities(caps) is None
 
 
-class TestButtonAvailabilityPrefersAppliance:
-    """Test that button availability follows the appliance over the catalog."""
+class TestButtonAvailabilityMergesSources:
+    """Test that button availability merges appliance triggers with catalog rules."""
 
     @pytest.fixture
     def mock_coordinator(self):
@@ -868,16 +908,22 @@ class TestButtonAvailabilityPrefersAppliance:
         entity._reported_state_cache = reported
         return entity
 
-    def test_start_hidden_in_idle_when_appliance_says_so(self, mock_coordinator):
-        """The bug: the catalog allows START in IDLE, the appliance only accepts ON."""
+    def test_start_allowed_in_idle_when_catalog_says_so(self, mock_coordinator):
+        """Merge behavior: catalog allows START in IDLE, so it's allowed even though the appliance doesn't advertise it."""
         caps = DRYER_TRIGGERS
         entity = self._make_button(mock_coordinator, "IDLE", "START", caps)
-        assert entity.available is False
+        assert entity.available is True
 
     def test_on_offered_in_idle_although_catalog_omits_it(self, mock_coordinator):
         """DRYER_EXECUTE_STATES has no ON entry at all, the appliance does."""
         caps = DRYER_TRIGGERS
         entity = self._make_button(mock_coordinator, "IDLE", "ON", caps)
+        assert entity.available is True
+
+    def test_stopreset_allowed_in_anticrease_from_catalog(self, mock_coordinator):
+        """The appliance triggers don't include ANTICREASE for STOPRESET, but the catalog does — merge keeps it."""
+        caps = DRYER_TRIGGERS
+        entity = self._make_button(mock_coordinator, "ANTICREASE", "STOPRESET", caps)
         assert entity.available is True
 
     def test_start_offered_in_ready_to_start(self, mock_coordinator):
