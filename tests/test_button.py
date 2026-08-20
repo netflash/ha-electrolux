@@ -853,8 +853,8 @@ class TestExecuteStatesFromCapabilities:
         assert execute_states_from_capabilities(caps) is None
 
 
-class TestButtonAvailabilityMergesSources:
-    """Test that button availability merges appliance triggers with catalog rules."""
+class TestButtonAvailabilityPrefersAppliance:
+    """Test that button availability follows the appliance over the catalog."""
 
     @pytest.fixture
     def mock_coordinator(self):
@@ -908,22 +908,16 @@ class TestButtonAvailabilityMergesSources:
         entity._reported_state_cache = reported
         return entity
 
-    def test_start_allowed_in_idle_when_catalog_says_so(self, mock_coordinator):
-        """Merge behavior: catalog allows START in IDLE, so it's allowed even though the appliance doesn't advertise it."""
+    def test_start_hidden_in_idle_when_appliance_says_so(self, mock_coordinator):
+        """The appliance only accepts ON in IDLE, not START.  Appliance triggers win over the catalog."""
         caps = DRYER_TRIGGERS
         entity = self._make_button(mock_coordinator, "IDLE", "START", caps)
-        assert entity.available is True
+        assert entity.available is False
 
     def test_on_offered_in_idle_although_catalog_omits_it(self, mock_coordinator):
         """DRYER_EXECUTE_STATES has no ON entry at all, the appliance does."""
         caps = DRYER_TRIGGERS
         entity = self._make_button(mock_coordinator, "IDLE", "ON", caps)
-        assert entity.available is True
-
-    def test_stopreset_allowed_in_anticrease_from_catalog(self, mock_coordinator):
-        """The appliance triggers don't include ANTICREASE for STOPRESET, but the catalog does — merge keeps it."""
-        caps = DRYER_TRIGGERS
-        entity = self._make_button(mock_coordinator, "ANTICREASE", "STOPRESET", caps)
         assert entity.available is True
 
     def test_start_offered_in_ready_to_start(self, mock_coordinator):

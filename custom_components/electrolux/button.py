@@ -146,11 +146,12 @@ class ElectroluxButton(ElectroluxEntity, ButtonEntity):
     def _execute_states(self) -> dict[str, list[str]] | None:
         """Return the executeCommand rules that apply to this appliance.
 
-        The appliance's own ``applianceState`` triggers are merged with the
-        catalog table: for each command the allowed states are the union of
-        both sources.  The tables are per appliance type and individual models
-        differ — a dryer that does not advertise ANTICREASE as a STOPRESET
-        trigger would otherwise lose a state the catalog knows about.
+        The appliance's own ``applianceState`` triggers take precedence over
+        the catalog table: the tables are per appliance type, and individual
+        models differ.  A dryer that only accepts ON in IDLE, for example,
+        would otherwise show an enabled Start button that can only ever
+        answer 406.  The catalog is used only when the appliance publishes
+        no usable triggers.
         """
         caps = self._appliance_capabilities()
         caps_id = id(caps)
@@ -169,15 +170,7 @@ class ElectroluxButton(ElectroluxEntity, ButtonEntity):
         )
 
         states: dict[str, list[str]] | None
-        if derived and catalog:
-            states = {}
-            for command in set(derived) | set(catalog):
-                merged: list[str] = list(derived.get(command, []))
-                for state in catalog.get(command, []):
-                    if state not in merged:
-                        merged.append(state)
-                states[command] = merged
-        elif derived:
+        if derived:
             states = derived
         elif catalog:
             states = catalog
